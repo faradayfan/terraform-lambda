@@ -6,20 +6,34 @@
 
 ## Getting Started
 
-There are some environment variables that need to be set before you run these commands.
+Many of the important commands are located in the `Makefile`. That is where you will change a few of the environment variables used to deploy. Make sure the bucket names are changed to something that is available.
+
+To set up your terraform backend, change the `TF_BACKEND_BUCKET_NAME` value to somethng unique, then run 
 
 ```sh
-
-AWS_PROFILE
-
+make create-tf-backend-remote
 ```
 
-then you can run these commands
+Then, change the the `terraform` section in the `configuration.tf`. 
+
+```HCL
+terraform {
+  backend "s3" {
+    bucket = "tfbe" // <-- this needs to match your TF_BACKEND_BUCKET_NAME value
+    key    = "terraform-lambda-apigw"
+    region = "us-west-2" // <-- if you changed your region in the make file, change this to match
+  }
+}
+```
+
+Then you should just need to deploy the lamdba artifact.
 
 ```sh
-
 make deploy
+```
 
+Then deploy the infrastructure for your lamdba.
+
+```sh
 make tf-apply
-
 ```
